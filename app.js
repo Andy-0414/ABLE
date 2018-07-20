@@ -154,7 +154,7 @@ app.post("/sns", (req, res) => {
         var day = new Date();
         var sql = "INSERT INTO sns (writer, date, content,img) VALUES(?,now(),?,?)";
         var link = "http://18.222.191.92:3000/profile_none.png";
-        switch (img){
+        switch (img) {
             case 0:
                 link = "http://18.222.191.92:3000/profile1.png"
                 break;
@@ -193,5 +193,24 @@ app.get("/tip", (req, res) => {
 app.get("/sports", (req, res) => {
     fs.readFile("public/paralympiques/data.json", (err, data) => {
         res.send(JSON.parse(data));
+    })
+})
+
+// http://maps.googleapis.com/maps/api/geocode/xml?address=값입력%20110&language=ko&sensor=false
+// http://openapi.seoul.go.kr:8088/45456a4c57706a6839347059756566/json/ListDisabledFacilitiesService/1/1000/구/1
+
+var getJSON = require('get-json')
+app.get("/place", (req, res) => {
+    getJSON('http://openapi.seoul.go.kr:8088/45456a4c57706a6839347059756566/json/ListDisabledFacilitiesService/1/1000', function (error, response) {
+        var data = response.ListDisabledFacilitiesService.row;
+        var f = [];
+        for (i in data) {
+            f.push({
+                placename: data[i].NAME,
+                lat: data[i].BLDG_X/3616.65,
+                lng: data[i].BLDG_Y/8859.23
+            })
+        }
+        res.send(f);
     })
 })
