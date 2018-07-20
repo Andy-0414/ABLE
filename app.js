@@ -25,7 +25,7 @@ CREATE TABLE login
 CREATE TABLE sns
 (
     `id`        INT             NOT NULL    AUTO_INCREMENT,
-    `writer`  INT             NOT NULL,
+    `writer`  VARCHAR(24)             NOT NULL,
     `date`      DATETIME        NOT NULL,
     `content`   VARCHAR(500)    NOT NULL,
     `img`   VARCHAR(500)    NOT NULL,
@@ -196,21 +196,9 @@ app.get("/sports", (req, res) => {
     })
 })
 
-// http://maps.googleapis.com/maps/api/geocode/xml?address=값입력%20110&language=ko&sensor=false
-// http://openapi.seoul.go.kr:8088/45456a4c57706a6839347059756566/json/ListDisabledFacilitiesService/1/1000/구/1
 
-var getJSON = require('get-json')
 app.get("/place", (req, res) => {
-    getJSON('http://openapi.seoul.go.kr:8088/45456a4c57706a6839347059756566/json/ListDisabledFacilitiesService/1/1000', function (error, response) {
-        var data = response.ListDisabledFacilitiesService.row;
-        var f = [];
-        for (i in data) {
-            f.push({
-                placename: data[i].NAME,
-                lat: data[i].BLDG_X/3616.65,
-                lng: data[i].BLDG_Y/8859.23
-            })
-        }
-        res.send(f);
+    fs.readFile("place.json", (err, data) => {
+        res.send(JSON.parse(data));
     })
 })
